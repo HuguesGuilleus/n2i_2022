@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+
+	"embed"
 )
 
 type Config struct {
@@ -17,6 +19,9 @@ type Config struct {
 	// Handler to store the logger.
 	LogHandler slog.Handler
 }
+
+//go:embed jeu
+var jeu embed.FS
 
 func NewServer(config *Config) (http.Handler, error) {
 	db, err := newDB(config.DBDirectory)
@@ -32,6 +37,8 @@ func NewServer(config *Config) (http.Handler, error) {
 	s.mux.Handle("/", staticHandler("text/html", front.INDEX))
 	s.mux.Handle("/css", staticHandler("text/css", front.CSS))
 	s.mux.Handle("/js", staticHandler("application/javascript", front.JS))
+
+	s.mux.Handle("/jeu/", http.FileServer(http.FS(jeu)))
 
 	return s, nil
 }

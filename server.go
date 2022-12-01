@@ -18,7 +18,8 @@ func NewServer(config *Config) http.Handler {
 }
 
 type server struct {
-	log *slog.Logger
+	log   *slog.Logger
+	dbDir string
 }
 
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var fileNameRegexp = regexp.MustCompile(`^[1-9]\d*.json$`)
+var fileNameRegexp = regexp.MustCompile(`^([1-9]\d*).json$`)
 
 type Page struct {
 	id    int

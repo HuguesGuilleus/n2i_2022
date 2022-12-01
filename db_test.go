@@ -8,7 +8,7 @@ import (
 )
 
 func TestLoagTags(t *testing.T) {
-	tags, err := loadTags("datatest")
+	tags, err := database("datatest").loadTags()
 	assert.NoError(t, err)
 	assert.Equal(t, map[string][]int{
 		"Contraception": []int{3},
@@ -19,7 +19,7 @@ func TestLoagTags(t *testing.T) {
 }
 
 func TestLoadPage(t *testing.T) {
-	page, err := loadPage("datatest", 1)
+	page, err := database("datatest").loadPage(1)
 	assert.NoError(t, err)
 	assert.Equal(t, &Page{
 		Title: "VIH",
@@ -44,14 +44,14 @@ func TestStorePage(t *testing.T) {
 		},
 		Date: time.Date(2022, time.December, 1, 20, 29, 4, 0, time.UTC),
 	}
-	dirDB := "/tmp/n2i/"
-	_, err := initDB(dirDB)
+
+	db, err := newDB("/tmp/n2i/")
 	assert.NoError(t, err)
-	defer os.RemoveAll(dirDB)
+	defer os.RemoveAll(string(db))
 
-	assert.NoError(t, storePage(dirDB, 42, expected))
+	assert.NoError(t, db.storePage(42, expected))
 
-	received, err := loadPage(dirDB, 42)
+	received, err := db.loadPage(42)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, received)
 }

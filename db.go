@@ -13,7 +13,6 @@ import (
 var fileNameRegexp = regexp.MustCompile(`^([1-9]\d*).json$`)
 
 type Page struct {
-	id    int
 	Title string    `json:"title"`
 	Body  string    `json:"body"`
 	Date  time.Time `json:"date"`
@@ -24,8 +23,15 @@ type PageTags struct {
 	Tags []string `json:"tags"`
 }
 
-func loadTags(dirDB string) (map[string][]int, error) {
+func initDB(dirDB string) (string, error) {
 	dirDB = filepath.Clean(dirDB)
+	if err := os.MkdirAll(dirDB, 0o775); err != nil {
+		return "", fmt.Errorf("Init the db %q %w", dirDB, err)
+	}
+	return dirDB, nil
+}
+
+func loadTags(dirDB string) (map[string][]int, error) {
 	entrys, err := os.ReadDir(dirDB)
 	if err != nil {
 		return nil, fmt.Errorf("Load DB %q: %w", dirDB, err)
@@ -55,4 +61,31 @@ func loadTags(dirDB string) (map[string][]int, error) {
 	}
 
 	return m, nil
+}
+
+func loadPage(dirDB string, id int) (*Page, error) {
+	data, err := os.ReadFile(pagePath(dirDB, id))
+	if err != nil {
+		return nil, fmt.Errorf("Load %d: %w", id, err)
+	}
+
+	page := new(Page)
+	if err := json.Unmarshal(data, page); err != nil {
+		return nil, fmt.Errorf("Load %d: %w", id, err)
+	}
+
+	return page, nil
+}
+
+func storePage(dirDB string, id int, page *Page) error {
+	data, _ := json.Marshal(page)
+	err := os.WriteFile(pagePath(dirDB, id), data, 0o664)
+	if err != nil {
+		return fmt.Errorf("Store %d fail: %w", id, err)
+	}
+	return nil
+}
+
+func pagePath(dirDB string, id int) string {
+	return filepath.Join(dirDB, strconv.Itoa(id)+".json")
 }

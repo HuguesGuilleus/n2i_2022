@@ -11,13 +11,18 @@ import (
 )
 
 func main() {
+	log.SetFlags(0)
+
 	address := flag.String("a", ":8000", "Listen address")
 	flag.Parse()
 
-	config := n2i.Config{
-		LogHandler: slog.NewTextHandler(os.Stdout),
+	server, err := n2i.NewServer(&n2i.Config{
+		LogHandler: slog.NewTextHandler(os.Stderr),
+	})
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	fmt.Println("Listen", *address)
-	log.Fatal(http.ListenAndServe(*address, n2i.NewServer(&config)))
+	log.Fatal(http.ListenAndServe(*address, server))
 }

@@ -28,7 +28,7 @@ func merge(fsys fs.FS, minifyFunc minify.MinifierFunc) []byte {
 	source := bytes.Buffer{}
 	err := fs.WalkDir(fsys, ".", func(path string, entry fs.DirEntry, err error) error {
 		if err != nil {
-			fmt.Errorf("Walk in %q: %w", path, err)
+			return fmt.Errorf("Walk in %q: %w", path, err)
 		} else if entry.IsDir() {
 			return nil
 		}

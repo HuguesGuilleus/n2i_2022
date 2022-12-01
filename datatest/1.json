@@ -1,7 +1,8 @@
 {
-    "title":"VIH",
-    "body":"# Bonjour tout le monde j'ai le VIH",
-    "tags":["VIH","Protéction","Prevention"],
-    "date":"01212002" 
-
+	"title": "VIH",
+	"body": "# Introduction\n\nBonjour tout le monde j'ai le VIH.",
+	"tags": [
+		"VIH", "Protéction", "Prevention"
+	],
+	"date": "2022-12-01T20:29:04Z"
 }

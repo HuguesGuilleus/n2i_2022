@@ -6,9 +6,7 @@ import (
 	"embed"
 	"fmt"
 	"github.com/HuguesGuilleus/n2i_2022/front"
-	"github.com/russross/blackfriday/v2"
 	"golang.org/x/exp/slog"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -30,30 +28,25 @@ func (s *server) HandleRequest(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL.Path)
 
 	if r.URL.Path == "/page/" || r.URL.Path == "/page" {
-		fmt.Println("DEBUG /page")
-		// send all page title with their tags and last edition date
-	} else {
-		// send all data of this page
-		var id_page int
-		_, err := fmt.Sscanf(r.URL.Path, "/page/%d", &id_page)
-		log.Println(id_page, err)
-		if err != nil {
-			fmt.Print("DEBUG /page/id", err)
-			fmt.Println(id_page)
-		}
-		if err != nil {
-			http.Error(w, "InternalError", http.StatusInternalServerError)
-			return
-		}
-
-		page, err := s.db.loadPage(id_page)
-		if err != nil {
-			http.Error(w, "InternalError", http.StatusInternalServerError)
-			return
-		}
-
-		w.Write(blackfriday.Run([]byte(page.Body)))
+		http.Redirect(w, r, "/", http.StatusPermanentRedirect)
+		return
 	}
+
+	// send all data of this page
+	var id int
+	_, err := fmt.Sscanf(r.URL.Path, "/page/%d", &id)
+	if err != nil {
+		http.Error(w, "Need a good id", 400)
+		return
+	}
+
+	page, err := s.db.loadPage(id)
+	if err != nil {
+		http.Error(w, "Page not found", 404)
+		return
+	}
+
+	front.PageTemplate.Execute(w, page)
 }
 
 func NewServer(config *Config) (http.Handler, error) {

@@ -4,6 +4,8 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"github.com/russross/blackfriday/v2"
+	"html/template"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -20,6 +22,10 @@ type Page struct {
 	Body  string    `json:"body"`
 	Date  time.Time `json:"date"`
 	Tags  []string  `json:"tags"`
+}
+
+func (page *Page) BodyHtml() template.HTML {
+	return template.HTML(blackfriday.Run([]byte(page.Body)))
 }
 
 type database string

@@ -8,6 +8,7 @@ import (
 	"github.com/tdewolff/minify/v2/css"
 	"github.com/tdewolff/minify/v2/html"
 	"github.com/tdewolff/minify/v2/js"
+	"html/template"
 	"io/fs"
 )
 
@@ -25,6 +26,11 @@ var (
 
 	//go:embed index.html
 	INDEX []byte
+
+	//go:embed template.gohtml
+	pageString string
+
+	PageTemplate *template.Template = template.Must(template.New("").Parse(pageString))
 )
 
 func merge(fsys fs.FS, minifyFunc minify.MinifierFunc) []byte {

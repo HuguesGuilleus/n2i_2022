@@ -19,11 +19,7 @@ type Page struct {
 	Title string    `json:"title"`
 	Body  string    `json:"body"`
 	Date  time.Time `json:"date"`
-	PageTags
-}
-
-type PageTags struct {
-	Tags []string `json:"tags"`
+	Tags  []string  `json:"tags"`
 }
 
 type database string
@@ -51,13 +47,18 @@ func (db database) loadUsers() (map[string][sha256.Size]byte, error) {
 	return m, nil
 }
 
-func (db database) loadTags() (map[string][]int, error) {
+// Return
+//  1. A map indexed by tags and the values is the index of page
+//  2. A map indexed by index, and the value is the title page.
+//  3. Error if occure
+func (db database) loadAllMetadata() (map[string][]int, map[int]string, error) {
 	entrys, err := os.ReadDir(string(db))
 	if err != nil {
-		return nil, fmt.Errorf("Load DB %q: %w", db, err)
+		return nil, nil, fmt.Errorf("Load DB %q: %w", db, err)
 	}
 
-	m := make(map[string][]int)
+	tags := make(map[string][]int)
+	titles := make(map[int]string)
 
 	for _, entry := range entrys {
 		name := entry.Name()
@@ -65,25 +66,26 @@ func (db database) loadTags() (map[string][]int, error) {
 			continue
 		}
 		if !fileNameRegexp.MatchString(name) {
-			return nil, fmt.Errorf("Load DB %q: file %q is not a regular page file name", db, name)
+			return nil, nil, fmt.Errorf("Load DB %q: file %q is not a regular page file name", db, name)
 		}
 		id, _ := strconv.Atoi(fileNameRegexp.ReplaceAllString(name, "$1"))
 
 		name = filepath.Join(string(db), entry.Name())
 		data, err := os.ReadFile(name)
 		if err != nil {
-			return nil, fmt.Errorf("DB load %q: %w", name, err)
+			return nil, nil, fmt.Errorf("DB load %q: %w", name, err)
 		}
-		tags := PageTags{}
-		if err := json.Unmarshal(data, &tags); err != nil {
-			return nil, fmt.Errorf("DB load %q: %w", name, err)
+		page := Page{}
+		if err := json.Unmarshal(data, &page); err != nil {
+			return nil, nil, fmt.Errorf("DB load %q: %w", name, err)
 		}
-		for _, tag := range tags.Tags {
-			m[tag] = append(m[tag], id)
+		for _, tag := range page.Tags {
+			tags[tag] = append(tags[tag], id)
 		}
+		titles[id] = page.Title
 	}
 
-	return m, nil
+	return tags, titles, nil
 }
 
 func (db database) loadPage(id int) (*Page, error) {

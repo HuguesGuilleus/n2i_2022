@@ -19,7 +19,7 @@ func TestLoadUsers(t *testing.T) {
 }
 
 func TestLoagTags(t *testing.T) {
-	tags, err := database("datatest").loadTags()
+	tags, titles, err := database("datatest").loadAllMetadata()
 	assert.NoError(t, err)
 	assert.Equal(t, map[string][]int{
 		"Contraception": []int{3},
@@ -27,6 +27,10 @@ func TestLoagTags(t *testing.T) {
 		"Protéction":    []int{1, 3},
 		"VIH":           []int{1},
 	}, tags)
+	assert.Equal(t, map[int]string{
+		1: "VIH",
+		3: "Préservatif",
+	}, titles)
 }
 
 func TestLoadPage(t *testing.T) {
@@ -35,10 +39,8 @@ func TestLoadPage(t *testing.T) {
 	assert.Equal(t, &Page{
 		Title: "VIH",
 		Body:  "# Introduction\n\nBonjour tout le monde j'ai le VIH.",
-		PageTags: PageTags{
-			Tags: []string{
-				"VIH", "Protéction", "Prevention",
-			},
+		Tags: []string{
+			"VIH", "Protéction", "Prevention",
 		},
 		Date: time.Date(2022, time.December, 1, 20, 29, 4, 0, time.UTC),
 	}, page)
@@ -48,10 +50,8 @@ func TestStorePage(t *testing.T) {
 	expected := &Page{
 		Title: "VIH",
 		Body:  "# Introduction\n\nBonjour tout le monde j'ai le VIH.",
-		PageTags: PageTags{
-			Tags: []string{
-				"VIH", "Protéction", "Prevention",
-			},
+		Tags: []string{
+			"VIH", "Protéction", "Prevention",
 		},
 		Date: time.Date(2022, time.December, 1, 20, 29, 4, 0, time.UTC),
 	}

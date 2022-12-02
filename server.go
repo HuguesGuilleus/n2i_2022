@@ -26,9 +26,8 @@ type Config struct {
 var jeu embed.FS
 
 func (s *server) HandleRequest(w http.ResponseWriter, r *http.Request) {
-	fmt.Print("DEBUG ")
-	fmt.Println(r.URL.Path)
 
+	
 	if r.URL.Path == "/page/" || r.URL.Path == "/page" {
 		fmt.Println("DEBUG /page")
 		// send all page title with their tags and last edition date

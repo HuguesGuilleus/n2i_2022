@@ -1,0 +1,104 @@
+
+body, div, html {
+    padding: 0;
+    
+}
+
+
+body {
+    position: relative;
+    margin-top: 8px;
+    margin:0 auto;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 800px;
+}
+.ombre {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    box-shadow: 8px 8px 25px 10px rgba(0,0,0,.24);
+   
+}
+
+
+.pos_cellule{
+    position: absolute;
+    z-index: 1;
+    top:1em;
+    left:33%;
+    width:400px;
+    height:80px;
+    }
+
+.bl{
+    display: flex; 
+    border-radius: 30px; 
+    width: 3%; 
+    height: 13%; 
+    font-size: 25px; 
+    position: absolute; 
+    background-color: "white";
+}
+
+
+
+nav{
+    position: relative;
+    margin-left: 3%;
+    top:200px;
+}
+
+
+.b-1{
+    position: relative;
+    text-align: "center";
+    top:70px;
+}
+
+.b-2{
+    text-align: "center";
+    position: relative;
+    top:120px;
+}
+.b-4{
+    text-align: "center";
+    position: relative;
+    top:170px;
+}
+
+
+.text_on_canvas{
+    position: absolute;
+    z-index: 1;
+    top:300px;
+    margin-left: 45%;
+    margin-right: auto;
+    color:#FFF;
+}
+
+.b-3{
+    position: relative;
+    z-index: 1;
+    top:200px;
+    text-align: "center";
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#score{
+    text-align: "center";
+    position: absolute;
+    z-index: 1;
+    top:180px;
+    margin-left: 85%;
+    margin-right: auto;
+}

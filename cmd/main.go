@@ -17,7 +17,8 @@ func main() {
 	flag.Parse()
 
 	server, err := n2i.NewServer(&n2i.Config{
-		LogHandler: slog.NewTextHandler(os.Stderr),
+		LogHandler:  slog.NewTextHandler(os.Stderr),
+		DBDirectory: "datatest",
 	})
 	if err != nil {
 		log.Fatal(err)

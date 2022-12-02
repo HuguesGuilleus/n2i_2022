@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang=fr>
+
+<head>
+	<meta charset=utf-8>
+	<link rel=stylesheet href=/css>
+	<title>Informations</title>
+</head>
+
+
+<body>
+	<main>
+		<h1>Informations</h1>
+		{{range $id, $title := .}}
+			<li><a href="/page/{{$id}}">{{$title}}</a></li>
+		{{end}}
+
+
+		<h1>Jeux</h1>
+		<ul>
+			<li><a href="/jeu/memory/">Memory</a></li>
+			<li><a href="/jeu/platforme/">Platforme</a></li>
+			<li><a href="/jeu/snake/">Snake</a></li>
+		</ul>
+
+	</main>
+</body>
+
+</html>

@@ -55,20 +55,23 @@ func NewServer(config *Config) (http.Handler, error) {
 		return nil, err
 	}
 
+	_, titles, _ := db.loadAllMetadata()
+
 	s := &server{
 		log: slog.New(config.LogHandler),
 		db:  db,
 	}
 
-	s.mux.Handle("/", staticHandler("text/html", front.INDEX))
 	s.mux.Handle("/css", staticHandler("text/css", front.CSS))
 	s.mux.Handle("/js", staticHandler("application/javascript", front.JS))
 	s.mux.Handle("/img/", http.FileServer(http.FS(front.Images)))
 
-	// s.mux.Handle("/jeu/", http.FileServer(http.FS(jeu)))
-	s.mux.Handle("/jeu/", http.FileServer(http.Dir(".")))
+	s.mux.Handle("/jeu/", http.FileServer(http.FS(jeu)))
 
 	s.mux.HandleFunc("/page/", s.HandleRequest)
+	s.mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		front.IndexTemplate.Execute(w, titles)
+	})
 
 	return s, nil
 }

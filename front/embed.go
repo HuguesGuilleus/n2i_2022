@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"
-	"github.com/tdewolff/minify/v2/html"
 	"github.com/tdewolff/minify/v2/js"
 	"html/template"
 	"io/fs"
@@ -24,12 +23,12 @@ var (
 	JS  []byte = merge(jsFS, js.Minify)
 	CSS []byte = merge(cssFS, css.Minify)
 
-	//go:embed index.html
-	INDEX []byte
+	//go:embed index.gohtml
+	indexString   string
+	IndexTemplate *template.Template = template.Must(template.New("").Parse(indexString))
 
 	//go:embed template.gohtml
-	pageString string
-
+	pageString   string
 	PageTemplate *template.Template = template.Must(template.New("").Parse(pageString))
 )
 
@@ -60,13 +59,4 @@ func merge(fsys fs.FS, minifyFunc minify.MinifierFunc) []byte {
 		panic(err)
 	}
 	return output.Bytes()
-}
-
-// Minify HTML
-func init() {
-	buff := bytes.Buffer{}
-	if err := html.Minify(nil, &buff, bytes.NewReader([]byte(INDEX)), nil); err != nil {
-		panic(err)
-	}
-	INDEX = buff.Bytes()
 }

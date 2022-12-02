@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang=fr>
-	<head>
-		<meta charset="utf-8">
-		<title>{{.Title}}</title>
-	</head>
-	<body>
-		<head>
+
+<head>
+	<meta charset=utf-8>
+	<link rel=stylesheet href=/css>
+	<title>{{.Title}}</title>
+</head>
+
+<body>
+	<main>
+		<header>
 			<h1>{{.Title}}</h1>
 			Dernière modification: {{.Date}}
-		</head>
+		</header>
 		{{.BodyHtml}}
-	</body>
+	</main>
+</body>
+
 </html>

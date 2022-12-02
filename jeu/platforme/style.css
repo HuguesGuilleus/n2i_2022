@@ -1,0 +1,7 @@
+#jeuCanvas {
+	background: black;
+}
+
+#jeu > p {
+	font-style: italic;
+}

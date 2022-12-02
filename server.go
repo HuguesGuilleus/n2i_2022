@@ -1,6 +1,7 @@
 package n2i
 
 import (
+	"fmt"
 	"bytes"
 	"compress/gzip"
 	"github.com/HuguesGuilleus/n2i_2022/front"
@@ -9,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-
+	"github.com/russross/blackfriday/v2"
 	"embed"
 )
 
@@ -22,6 +23,50 @@ type Config struct {
 
 //go:embed jeu
 var jeu embed.FS
+
+
+
+func (s server) HandleRequest(w http.ResponseWriter, r *http.Request){
+	fmt.Print("DEBUG ");
+	fmt.Println(r.URL.Path);
+
+
+	if(r.URL.Path == "/page/" || r.URL.Path == "/page"){
+		fmt.Println("DEBUG /page");
+		// send all page title with their tags and last edition date
+
+	
+	
+	}else{
+		
+		// send all data of this page
+		var id_page int
+		_, err  := fmt.Sscanf(r.URL.Path,"/page/%d",&id_page);
+		fmt.Println(id_page);
+		if (err != nil){
+			fmt.Print("DEBUG /page/id",err)
+			fmt.Println(id_page);
+		}	
+		if (err != nil){
+			http.Error(w, "InternalError",http.StatusInternalServerError)
+			return
+		}
+
+		page, err := s.db.loadPage(id_page)
+		
+		if (err != nil){
+			http.Error(w, "InternalError",http.StatusInternalServerError)
+			return
+		}
+		
+		w.Write( blackfriday.Run([]byte(page.Body)))
+
+	}
+	
+	
+
+}
+
 
 func NewServer(config *Config) (http.Handler, error) {
 	db, err := newDB(config.DBDirectory)
@@ -41,6 +86,9 @@ func NewServer(config *Config) (http.Handler, error) {
 
 	// s.mux.Handle("/jeu/", http.FileServer(http.FS(jeu)))
 	s.mux.Handle("/jeu/", http.FileServer(http.Dir(".")))
+
+	s.mux.HandleFunc("/page/",s.HandleRequest);
+
 
 	return s, nil
 }

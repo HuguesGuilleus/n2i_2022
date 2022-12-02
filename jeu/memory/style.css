@@ -1,0 +1,17 @@
+#jeuMemoryCarte {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-gap: 1ex;
+}
+
+#jeuMemoryCarte > div,
+#jeuMemoryCarte > div > img {
+	width: 100%;
+	height: auto;
+}
+
+main {
+	max-width: 70ex;
+	margin: auto;
+	padding: 1ex;
+}

@@ -25,7 +25,7 @@
 				// resolved
 				r: false
 			}))
-			.sort(_ => Math.random() < 0.9);
+			.sort(_ => Math.random() - 0.5);
 
 	let other = null,
 		jammed = false;

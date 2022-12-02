@@ -1,3 +1,5 @@
-body {
-	color: forestgreen;
+main {
+	max-width: 70ex;
+	margin: auto;
+	padding: 1ex;
 }

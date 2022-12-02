@@ -1,11 +1,22 @@
 package n2i
 
 import (
+	"crypto/sha256"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 	"time"
 )
+
+func TestLoadUsers(t *testing.T) {
+	users, err := database("datatest").loadUsers()
+	assert.NoError(t, err)
+
+	assert.Equal(t, map[string][sha256.Size]byte{
+		"user1": sha256.Sum256([]byte("123456")),
+		"user2": sha256.Sum256([]byte("abcdef")),
+	}, users)
+}
 
 func TestLoagTags(t *testing.T) {
 	tags, err := database("datatest").loadTags()

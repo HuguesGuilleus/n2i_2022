@@ -1,6 +1,7 @@
 package n2i
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -9,6 +10,8 @@ import (
 	"strconv"
 	"time"
 )
+
+const usersFileName = "users.json"
 
 var fileNameRegexp = regexp.MustCompile(`^([1-9]\d*).json$`)
 
@@ -33,6 +36,21 @@ func newDB(dirDB string) (database, error) {
 	return database(dirDB), nil
 }
 
+func (db database) loadUsers() (map[string][sha256.Size]byte, error) {
+	fileName := filepath.Join(string(db), usersFileName)
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, fmt.Errorf("Read users credencials fail from %q: %w", fileName, err)
+	}
+
+	m := make(map[string][sha256.Size]byte)
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, fmt.Errorf("Load users credencials fail from %q: %w", fileName, err)
+	}
+
+	return m, nil
+}
+
 func (db database) loadTags() (map[string][]int, error) {
 	entrys, err := os.ReadDir(string(db))
 	if err != nil {
@@ -43,6 +61,9 @@ func (db database) loadTags() (map[string][]int, error) {
 
 	for _, entry := range entrys {
 		name := entry.Name()
+		if name == usersFileName {
+			continue
+		}
 		if !fileNameRegexp.MatchString(name) {
 			return nil, fmt.Errorf("Load DB %q: file %q is not a regular page file name", db, name)
 		}

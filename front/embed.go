@@ -12,6 +12,9 @@ import (
 )
 
 var (
+	//go:embed img
+	Images embed.FS
+
 	//go:embed js
 	jsFS embed.FS
 	//go:embed css

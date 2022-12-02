@@ -37,8 +37,10 @@ func NewServer(config *Config) (http.Handler, error) {
 	s.mux.Handle("/", staticHandler("text/html", front.INDEX))
 	s.mux.Handle("/css", staticHandler("text/css", front.CSS))
 	s.mux.Handle("/js", staticHandler("application/javascript", front.JS))
+	s.mux.Handle("/img/", http.FileServer(http.FS(front.Images)))
 
-	s.mux.Handle("/jeu/", http.FileServer(http.FS(jeu)))
+	// s.mux.Handle("/jeu/", http.FileServer(http.FS(jeu)))
+	s.mux.Handle("/jeu/", http.FileServer(http.Dir(".")))
 
 	return s, nil
 }
